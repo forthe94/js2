@@ -1,0 +1,31 @@
+* {
+	font-family: Roboto;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 19px;
+	letter-spacing: 1px;
+}
+
+.goods-item {
+	width: 611px;
+	height: 71px;
+	border: 1px solid #C4C4C4;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: space-between;
+	padding-left: 20px;
+	padding-right: 20px;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.cart-button {
+	width: 611px;
+	height: 43.92px;
+	background: #1333DE;
+	border: 1px solid #1333DE;
+	border-radius: 2px;
+	color: #FFFFFF;
+	margin-bottom: 20px;
+}
