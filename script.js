@@ -1,3 +1,48 @@
+const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses'
+
+const makeGETRequest = url => {
+    return new Promise((resolve, reject) => {
+	let xhr;
+
+        if (window.XMLHttpRequest) {
+          xhr = new XMLHttpRequest();
+        } else if (window.ActiveXObject) { 
+          xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            resolve(xhr.responseText);
+          }
+        }
+        
+        xhr.open('GET', url, true);
+        xhr.send();
+    })
+  
+}
+
+//const makeGETRequest = (url, callback) => {
+//    let xhr;
+//
+//    if (window.XMLHttpRequest) {
+//      xhr = new XMLHttpRequest();
+//    } else if (window.ActiveXObject) { 
+//      xhr = new ActiveXObject("Microsoft.XMLHTTP");
+//    }
+//
+//    xhr.onreadystatechange = function () {
+//      if (xhr.readyState === 4) {
+//        callback(xhr.responseText);
+//      }
+//    }
+//
+//    xhr.open('GET', url, true);
+//    xhr.send();
+//  }
+
+
+
 class GoodsItem {
   constructor(product_name, price) {
     this.product_name = product_name;
@@ -15,7 +60,7 @@ class GoodsList {
   }
 
   fetchGoods(cb) {
-    makeGETRequest(`${API_URL}/catalogData.json`, (goods) => {
+    makeGETRequest(`${API_URL}/catalogData.json`).then ( (goods) => {
       this.goods = JSON.parse(goods);
       cb();
     })
@@ -40,6 +85,8 @@ class GoodsList {
 }
 
 const list = new GoodsList();
+
+
 list.fetchGoods(() => {
   list.render();
 });
@@ -66,4 +113,5 @@ class BasketItem extends GoodsItem {
 
   addOne() {}
 
-  rem
+  removeOne() {}
+}
