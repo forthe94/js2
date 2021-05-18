@@ -22,27 +22,6 @@ const makeGETRequest = url => {
   
 }
 
-//const makeGETRequest = (url, callback) => {
-//    let xhr;
-//
-//    if (window.XMLHttpRequest) {
-//      xhr = new XMLHttpRequest();
-//    } else if (window.ActiveXObject) { 
-//      xhr = new ActiveXObject("Microsoft.XMLHTTP");
-//    }
-//
-//    xhr.onreadystatechange = function () {
-//      if (xhr.readyState === 4) {
-//        callback(xhr.responseText);
-//      }
-//    }
-//
-//    xhr.open('GET', url, true);
-//    xhr.send();
-//  }
-
-
-
 class GoodsItem {
   constructor(product_name, price) {
     this.product_name = product_name;
@@ -84,12 +63,7 @@ class GoodsList {
   }
 }
 
-const list = new GoodsList();
 
-
-list.fetchGoods(() => {
-  list.render();
-});
 
 
 
@@ -98,11 +72,17 @@ class Basket extends GoodsList {
     super(...args);
   }
 
-  clearAll() {}
+  clearAll() {
+      goods = []
+  }
 
-  addItem() {}
-
-  removeItem() {}
+  addItem(name, price) {
+      this.goods.push({product_name:name, price:price});
+  } 
+  
+  removeItem(index) {
+      this.goods.splice(index, 1);
+  }
 }
 
 class BasketItem extends GoodsItem {
@@ -111,7 +91,25 @@ class BasketItem extends GoodsItem {
     this.count = 0;
   }
 
-  addOne() {}
+  addOne() {
+      this.count += 1;
+  }
 
-  removeOne() {}
+  removeOne() {
+      if (this.count){
+	  this.count -=1;
+      }
+	  
+  }
 }
+
+
+
+const list = new Basket();
+
+
+list.fetchGoods(() => {
+    list.addItem('Каша', 500);
+    list.removeItem(2);
+  list.render();
+});
