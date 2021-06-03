@@ -5,7 +5,7 @@
       <div v-for="item in goods" :key="item.id_product" class='goods-item'>
         <h3>{{item.product_name}}</h3>
         <p>{{item.price}}</p>
-        <button>Добавить</button>
+        <button @click="onClick(item)">Добавить</button>
       </div>
     </div>
   </div>
@@ -17,6 +17,11 @@ export default {
     goods: {
       type: Array,
       default: () => [],
+    }
+  },
+  methods: {
+    onClick(item) {
+      this.$emit('add-to-cart', item);
     }
   }
 }
