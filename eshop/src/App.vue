@@ -1,34 +1,30 @@
 <template>
   <div id="app">
-    <header>
-      <input v-model="searhLine" type="text" class="goods-search" />
-      <button class="search-button" type="button" @click="filterGoods">Искать</button>
-      <button class="cart-button" type="button" @click="toggleCartStatus">Корзина</button>
-    </header>
+    <Header @toggle-cart="toggleCartStatus" @filter-goods="filterGoods"/>
     <main>
-      <GoodsList :goods="filteredGoods" />
-      <br />
-      <div v-show="isVisibleCart" class="cart">
-        Корзина:
-        <div class="cart-list"></div>
-      </div>
+      <GoodsList @add-to-cart="addToCart" :goods="filteredGoods"/>
+      <br/>
+      <Cart :cartGoods="cartGoods" :isVisibleCart="isVisibleCart"/>
     </main>
   </div>
 </template>
 
 <script>
-// 1. Вынести весь хэдер в компонент
-// 2. Вынести корзину в компонент
 import GoodsList from './components/GoodsList';
+import Header from './components/Header';
+import Cart from './components/Cart';
+
 const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses'
 export default {
   components: {
     GoodsList,
+    Header,
+    Cart,
   },
   data: () => ({
     goods: [],
+    cartGoods: [],
     filteredGoods: [],
-    searhLine: '',
     isVisibleCart: false,
   }),
   mounted() {
@@ -41,21 +37,16 @@ export default {
         .then((data) => {
           this.goods = data;
           this.filteredGoods = data;
-        }) 
+        })
     },
-    filterGoods() {
-      const regexp = new RegExp(this.searhLine, 'i');
+    filterGoods(value) {
+      const regexp = new RegExp(value, 'i');
       this.filteredGoods = this.goods.filter(good => regexp.test(good.product_name));
     },
     toggleCartStatus() {
       this.isVisibleCart = !this.isVisibleCart;
     }
   },
-  watch: {
-    searhLine() {
-      this.filterGoods();
-    }
-  }
 }
 </script>
 
