@@ -1,61 +1,77 @@
 <template>
   <div id="app">
-    <header>
-      <input v-model="searhLine" type="text" class="goods-search" />
-      <button class="search-button" type="button" @click="filterGoods">Искать</button>
-      <button class="cart-button" type="button" @click="toggleCartStatus">Корзина</button>
-    </header>
+    <Header @toggle-cart="toggleCartStatus" @filter-goods="filterGoods" />
     <main>
-      <GoodsList :goods="filteredGoods" />
+      <GoodsList @add-to-cart="addToCart" :goods="filteredGoods" />
       <br />
-      <div v-show="isVisibleCart" class="cart">
-        Корзина:
-        <div class="cart-list"></div>
-      </div>
+      <Cart :cartGoods="cartGoods" :isVisibleCart="isVisibleCart" />
     </main>
   </div>
 </template>
 
 <script>
-// 1. Вынести весь хэдер в компонент
-// 2. Вынести корзину в компонент
 import GoodsList from './components/GoodsList';
-const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses'
+import Header from './components/Header';
+import Cart from './components/Cart';
+const API_URL = 'http://localhost:3000'
 export default {
   components: {
     GoodsList,
+    Header,
+    Cart,
   },
   data: () => ({
     goods: [],
+    cartGoods: [],
     filteredGoods: [],
-    searhLine: '',
     isVisibleCart: false,
   }),
   mounted() {
-    this.makeGETRequest(`${API_URL}/catalogData.json`)
+    this.getGoods();
+    this.getCart();
   },
   methods: {
+    addToCart(item) {
+      console.log(item)
+      this.makePOSTRequest(`${API_URL}/addToCart`, item)
+        .then(() => this.getCart())
+    },
     makeGETRequest(url) {
-      fetch(url)
+      return fetch(url)
         .then((data) => data.json())
+    },
+    makePOSTRequest(url, data) {
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      })
+        .then((data) => data.json())
+    },
+    getGoods() {
+      this.makeGETRequest(`${API_URL}/catalogData`)
         .then((data) => {
+          console.log(data)
           this.goods = data;
           this.filteredGoods = data;
-        }) 
+        })
     },
-    filterGoods() {
-      const regexp = new RegExp(this.searhLine, 'i');
+    getCart() {
+      this.makeGETRequest(`${API_URL}/cartData`)
+        .then((data) => {
+          this.cartGoods = data
+        })
+    },
+    filterGoods(value) {
+      const regexp = new RegExp(value, 'i');
       this.filteredGoods = this.goods.filter(good => regexp.test(good.product_name));
     },
     toggleCartStatus() {
       this.isVisibleCart = !this.isVisibleCart;
     }
   },
-  watch: {
-    searhLine() {
-      this.filterGoods();
-    }
-  }
 }
 </script>
 
